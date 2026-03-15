@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/Navbar';
 import Stats from './components/Stats';
@@ -12,6 +12,14 @@ import { useLanguage } from './LanguageContext';
 const API_BASE = import.meta.env.DEV
   ? `http://${window.location.hostname}:8000`
   : 'https://courseforge-ai-backend.onrender.com';
+
+// Keep Render backend awake by pinging every 10 minutes
+if (!import.meta.env.DEV) {
+  const pingBackend = () => axios.get(`${API_BASE}/health`).catch(() => {});
+  pingBackend(); // ping immediately on page load
+  setInterval(pingBackend, 10 * 60 * 1000); // then every 10 mins
+}
+
 function App() {
   const { t } = useLanguage();
   const [view, setView] = useState('home'); // 'home' | 'loading' | 'course' | 'error'
