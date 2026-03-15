@@ -34,7 +34,7 @@ class CourseRequest(BaseModel):
     language: str = "English"
 
 # Serve static assets from the React build
-app.mount("/assets", StaticFiles(directory="../frontend/dist/assets"), name="assets")
+# app.mount("/assets", StaticFiles(directory="../frontend/dist/assets"), name="assets")
 
 @app.post("/api/generate-course")
 async def generate_course_endpoint(request: CourseRequest):
