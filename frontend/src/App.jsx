@@ -11,7 +11,7 @@ import { useLanguage } from './LanguageContext';
 
 const API_BASE = import.meta.env.DEV
   ? `http://${window.location.hostname}:8000`
-  : 'https://honest-doors-divide.loca.lt';
+  : 'https://courseforge-ai-backend.onrender.com';
 function App() {
   const { t } = useLanguage();
   const [view, setView] = useState('home'); // 'home' | 'loading' | 'course' | 'error'
