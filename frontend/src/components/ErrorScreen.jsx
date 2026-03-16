@@ -4,9 +4,8 @@ import { AlertCircle, RefreshCw, KeyRound, ArrowLeft } from 'lucide-react';
 export default function ErrorScreen({ error, onRetry }) {
   const { t } = useLanguage();
   const isApiKey = error?.toLowerCase().includes('api_key') ||
-    error?.toLowerCase().includes('gemini') ||
-    error?.toLowerCase().includes('not configured') ||
-    error?.toLowerCase().includes('failed with all');
+    error?.toLowerCase().includes('api key not valid') ||
+    error?.toLowerCase().includes('not configured');
 
   return (
     <div style={{ maxWidth: 800, margin: '3rem auto', padding: '0 2rem' }}>

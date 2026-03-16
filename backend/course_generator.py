@@ -91,12 +91,10 @@ async def generate_with_gemini(prompt: str) -> str:
     genai.configure(api_key=api_key)
     
     models_to_try = [
-        "gemini-1.5-flash",
-        "gemini-1.5-flash-latest",
-        "gemini-pro",
-        "gemini-1.5-pro",
         "gemini-2.5-flash",
-        "models/gemini-1.5-flash"
+        "gemini-2.0-flash",
+        "gemini-1.5-pro-latest",  # Just in case 2.x fails
+        "models/gemini-2.5-flash"
     ]
     
     last_error = None
