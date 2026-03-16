@@ -90,21 +90,43 @@ async def generate_with_gemini(prompt: str) -> str:
     
     genai.configure(api_key=api_key)
     
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction=SYSTEM_PROMPT,
-        generation_config={
-            "temperature": 0.7,
-            "top_p": 0.9,
-            "max_output_tokens": 8192,
-            "response_mime_type": "application/json"
-        }
-    )
+    models_to_try = [
+        "gemini-1.5-flash",
+        "gemini-1.5-flash-latest",
+        "gemini-pro",
+        "gemini-1.5-pro",
+        "gemini-2.5-flash",
+        "models/gemini-1.5-flash"
+    ]
     
-    response = await model.generate_content_async(prompt)
-    if not response.text:
-         raise Exception("Empty response from Gemini")
-    return response.text
+    last_error = None
+    for model_name in models_to_try:
+        try:
+            model = genai.GenerativeModel(
+                model_name=model_name,
+                system_instruction=SYSTEM_PROMPT,
+                generation_config={
+                    "temperature": 0.7,
+                    "top_p": 0.9,
+                    "max_output_tokens": 8192,
+                    "response_mime_type": "application/json"
+                }
+            )
+            response = await model.generate_content_async(prompt)
+            if not response.text:
+                 raise Exception("Empty response from Gemini")
+            return response.text
+        except Exception as e:
+            error_str = str(e)
+            if "404" in error_str or "NotFound" in error_str or "not found" in error_str.lower():
+                last_error = e
+                continue
+            # If the API key is truly invalid (401), fail fast
+            if "API_KEY_INVALID" in error_str or "API key not valid" in error_str.lower():
+                raise
+            last_error = e
+            
+    raise Exception(f"Failed with all Gemini models. Last error: {last_error}")
 
 
 def parse_course_json(raw_text: str) -> dict:

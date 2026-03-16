@@ -53,6 +53,8 @@ async def generate_course_endpoint(request: CourseRequest):
         raise HTTPException(status_code=422, detail=str(e))
     except Exception as e:
         error_msg = str(e)
+        import google.generativeai as genai
+        version = getattr(genai, "__version__", "unknown")
         if "404" in error_msg or "NotFound" in error_msg or "API version" in error_msg:
-            raise HTTPException(status_code=401, detail=f"Details: {error_msg}")
-        raise HTTPException(status_code=500, detail=f"Course generation failed: {error_msg}")
+            raise HTTPException(status_code=401, detail=f"Details (genai v{version}): {error_msg}")
+        raise HTTPException(status_code=500, detail=f"Course generation failed (genai v{version}): {error_msg}")
