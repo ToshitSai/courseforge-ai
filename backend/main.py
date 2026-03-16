@@ -54,5 +54,5 @@ async def generate_course_endpoint(request: CourseRequest):
     except Exception as e:
         error_msg = str(e)
         if "404" in error_msg or "NotFound" in error_msg or "API version" in error_msg:
-            raise HTTPException(status_code=401, detail="Invalid API Key or Gemini API is not enabled for this key.")
+            raise HTTPException(status_code=401, detail=f"Details: {error_msg}")
         raise HTTPException(status_code=500, detail=f"Course generation failed: {error_msg}")
