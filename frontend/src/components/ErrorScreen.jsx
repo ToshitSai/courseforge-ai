@@ -6,6 +6,8 @@ export default function ErrorScreen({ error, onRetry }) {
   const isApiKey = error?.toLowerCase().includes('api_key') ||
     error?.toLowerCase().includes('api key not valid') ||
     error?.toLowerCase().includes('not configured');
+  const isRateLimit = error?.toLowerCase().includes('429') ||
+    error?.toLowerCase().includes('quota exceeded');
 
   return (
     <div style={{ maxWidth: 800, margin: '3rem auto', padding: '0 2rem' }}>
@@ -60,7 +62,7 @@ export default function ErrorScreen({ error, onRetry }) {
           marginBottom: '1rem',
           color: 'var(--text-primary)' 
         }}>
-          {isApiKey ? t('API Key Required') : t('Course Generation Failed')}
+          {isApiKey ? t('API Key Required') : isRateLimit ? t('Rate Limit Reached') : t('Course Generation Failed')}
         </h2>
         
         <p style={{
@@ -74,6 +76,10 @@ export default function ErrorScreen({ error, onRetry }) {
           {isApiKey ? (
             <>
               Please configure your <strong>GEMINI_API_KEY</strong> in your Google or Render dashboard.
+            </>
+          ) : isRateLimit ? (
+            <>
+              You have exceeded the free tier quota for generating courses. Please wait exactly <strong>1 minute</strong> before trying again. The Gemini API allows 15 requests per minute.
             </>
           ) : (
             typeof error === 'string' && error !== '' ? error : t('An unexpected network error occurred while reaching the AI servers. Please try again.')
